@@ -1,0 +1,76 @@
+{
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true,
+        "mocha": true,
+        "amd": true,
+        "jquery": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ],
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react"
+    ],
+    "globals": {
+        "chai": true,
+        "sinon": true,
+        "should": true,
+        "nock": true,
+        "expect": true,
+        "$": true,
+        "_": true,
+        "Promise": true
+    },
+    "rules": {
+        "camelcase": "off",
+        "comma-dangle": "off",
+        "comma-spacing": "off",
+        "dot-notation": "off",
+        "eol-last": "off",
+        "eqeqeq": "off",
+        "handle-callback-err": "off",
+        "key-spacing": "off",
+        "new-cap": "off",
+        "no-case-declarations": "off",
+        "no-console": "off",
+        "no-empty": ["warn", {"allowEmptyCatch": true}],
+        "no-mixed-requires": "off",
+        "no-mixed-spaces-and-tabs": "off",
+        "no-process-console": "off",
+        "no-process-exit": "off",
+        "no-shadow": "off",
+        "no-underscore-dangle": "off",
+        "no-unused-expressions": "off",
+        "no-unused-vars": ["warn", { "vars": "all", "args": "none", "ignoreRestSiblings": true, "caughtErrors": "none", "varsIgnorePattern": "Component"}],
+        "quotes": "off",
+        "space-infix-ops": "off",
+        "strict": "off",
+        "no-fallthrough": "off",
+        "no-sync": "off",
+        "one-var": "off",
+        "semi": "warn",
+        "vars-on-top": "off",
+        "yoda": "off",
+        "no-constant-condition": "warn",
+        "react/jsx-uses-react": "warn",
+        "react/jsx-uses-vars": "warn",
+        "react/prop-types": "off",
+        "react/no-danger": "off",
+        "react/no-deprecated": "off",
+        "react/no-unescaped-entities": "off",
+        "react/no-find-dom-node": "warn",
+        "react/jsx-no-target-blank": "warn"
+    }
+}
