@@ -1,6 +1,8 @@
 const bCrypt 			= require('bcrypt-nodejs');
+const jwt 				= require('jsonwebtoken');
 const LocalStrategy 	= require('passport-local').Strategy;
 const User 				= require('../models').user;
+const tokens            = require('./tokens');
 
 const isValidPassword = (userpass,password) => {
 	return bCrypt.compareSync(password, userpass);
@@ -18,16 +20,37 @@ const local_signin = new LocalStrategy({
 			.findOne({ where : { email: email }})
 			.then((user) => {
 				if (!user) {
-					return done(null, false, { message: 'User doesn\'t exist!' });
+					const error = new Error('User with that email does\'t exist.');
+			        error.name = 'IncorrectCredentialsError';
+
+			        return done(error);
 				}
 				if (!isValidPassword(user.password,password)) {
-					return done(null, false, { message: 'Incorrect password.' });
+					const error = new Error('Incorrect password.');
+			        error.name = 'IncorrectCredentialsError';
+
+			        return done(error);
 				}
 				const userInfo = user.get();
-				return done(null, userInfo, { message: 'Signed In.'});
+
+				const payload = {
+					sub: userInfo.id
+				};
+
+				// create a token string
+				const token = jwt.sign(payload, tokens.jwtToken);
+				const data = {
+					name: userInfo.username,
+					email: userInfo.email
+				};
+
+      			return done(null, token, data);
 			})
 			.catch((err) => {
-				return done(null, false, { message: 'Something went wrong with your Signin' });
+				const error = new Error('Something went wrong with your Signin');
+			   	error.name = 'AuthError';
+
+				return done(error);
 			});
 	}
 );
@@ -41,7 +64,10 @@ const local_signup = new LocalStrategy({
 			.findOne({ where: { email: email }})
 			.then((user) => {
 				if (user) {
-					return done(null, false, { message : 'That email is already taken' });
+					const error = new Error('Email is already taken.');
+			        error.name = 'IncorrectCredentialsError';
+
+					return done(error);
 				}
 				else {
 					let userPassword = generateHash(password);
@@ -65,7 +91,10 @@ const local_signup = new LocalStrategy({
 							}
 						})
 						.catch((err) => {
-							return done(null, false, {message: 'Something went wrong with creating your account.' });
+							const error = new Error('Something went wrong while creating your account.');
+						   	error.name = 'AuthError';
+
+							return done(error);
 						});
 				}
 			});
@@ -73,10 +102,12 @@ const local_signup = new LocalStrategy({
 );
 
 const serializeUser = (user, done) => {
+	console.log("SERIALIZACIJA",user);
     done(null, user.id);
 };
 
 const deserializeUser = (id, done) => {
+	console.log("DESERIALIZACIJA",id);
 	User
 		.findById(id)
 		.then((user) => {

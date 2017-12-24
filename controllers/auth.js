@@ -6,25 +6,28 @@ const signup = (req, res, next) => {
 			return next(err);
 		}
 		if (!user) {
-			return res.status(500).send(info);
+			return res.status(401).send(info);
 		}
 		res.status(200).send({ success: true });
 	})(req, res, next);
 };
 
 const signin = (req, res, next) => {
-	passport.authenticate('local-signin', (err, user, info) => {
+	passport.authenticate('local-signin', (err, token, data) => {
 		if (err) {
 			return next(err);
 		}
-		if (!user) {
-			return res.status(500).send(info);
-		}
+
 		req.session.save((err) => {
 			if (err) {
 				return next(err);
 			}
-			res.status(200).send({ success: true, data: {user: user} });
+			res.status(200).json({
+				success: true,
+				message: 'You have successfully logged in!',
+				token,
+				user: data
+    		});
 		});
 	})(req, res, next);
 };
