@@ -20,14 +20,18 @@ const local_signin = new LocalStrategy({
 			.findOne({ where : { email: email }})
 			.then((user) => {
 				if (!user) {
-					const error = new Error('User with that email does\'t exist.');
+					const error = new Error();
+			        error.status = 401;
 			        error.name = 'IncorrectCredentialsError';
+			        error.message = 'User with that email does\'t exist.';
 
 			        return done(error);
 				}
 				if (!isValidPassword(user.password,password)) {
-					const error = new Error('Incorrect password.');
+					const error = new Error();
+					error.status = 401;
 			        error.name = 'IncorrectCredentialsError';
+			        error.message = 'Incorrect password.';
 
 			        return done(error);
 				}
@@ -47,10 +51,12 @@ const local_signin = new LocalStrategy({
       			return done(null, token, data);
 			})
 			.catch((err) => {
-				const error = new Error('Something went wrong with your Signin');
-			   	error.name = 'AuthError';
+				const error = new Error();
+				error.status = 401;
+		        error.name = 'AuthError';
+		        error.message = 'Something went wrong with your Signin.';
 
-				return done(error);
+		        return done(error);
 			});
 	}
 );
@@ -64,8 +70,10 @@ const local_signup = new LocalStrategy({
 			.findOne({ where: { email: email }})
 			.then((user) => {
 				if (user) {
-					const error = new Error('Email is already taken.');
+					const error = new Error();
+					error.status = 401;
 			        error.name = 'IncorrectCredentialsError';
+			        error.message = 'Email is already taken.';
 
 					return done(error);
 				}
@@ -91,8 +99,10 @@ const local_signup = new LocalStrategy({
 							}
 						})
 						.catch((err) => {
-							const error = new Error('Something went wrong while creating your account.');
+							const error = new Error();
+							error.status = 401;
 						   	error.name = 'AuthError';
+						   	error.message = 'Something went wrong while creating your account.';
 
 							return done(error);
 						});
@@ -101,24 +111,24 @@ const local_signup = new LocalStrategy({
 	}
 );
 
-const serializeUser = (user, done) => {
-	console.log("SERIALIZACIJA",user);
-    done(null, user.id);
-};
+// const serializeUser = (user, done) => {
+// 	console.log("SERIALIZACIJA",user);
+//     done(null, user.id);
+// };
 
-const deserializeUser = (id, done) => {
-	console.log("DESERIALIZACIJA",id);
-	User
-		.findById(id)
-		.then((user) => {
-			if (user) {
-			 	done(null, user.get());
-			}
-			else {
-			 	done(user.errors,null);
-			}
-		});
-};
+// const deserializeUser = (id, done) => {
+// 	console.log("DESERIALIZACIJA",id);
+// 	User
+// 		.findById(id)
+// 		.then((user) => {
+// 			if (user) {
+// 			 	done(null, user.get());
+// 			}
+// 			else {
+// 			 	done(user.errors,null);
+// 			}
+// 		});
+// };
 
 // const validateSignupData = (data) => {
 // 	if (true) {}
@@ -131,6 +141,6 @@ module.exports = {
 	// Sign up strategy
 	local_signup,
 
-	serializeUser,
-	deserializeUser
+	// serializeUser,
+	// deserializeUser
 };

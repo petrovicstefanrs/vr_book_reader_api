@@ -20,7 +20,7 @@ var app = express();
 // c
 app.use(function(req, res, next) {
 	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
 	next();
 });
 
@@ -72,7 +72,7 @@ app.use(function(err, req, res, next) {
 
 	res.status(err.status || 500);
 	res.send({
-		err: err,
+		error: err,
 		message: err.message,
 		status: err.status
 	});
