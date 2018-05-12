@@ -6,24 +6,28 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./bin/www",
+    "makemigration": "node ./node_modules/sequelize-auto-migrations/bin/makemigration",
+    "migrate": "node ./node_modules/sequelize-auto-migrations/bin/runmigration",
     "start:dev": "nodemon ./bin/www"
   },
   "dependencies": {
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.18.2",
     "cookie-parser": "~1.4.3",
+    "cors": "^2.8.4",
     "debug": "~2.6.9",
     "express": "~4.15.5",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
     "jade": "~1.11.0",
-    "jsonwebtoken": "^8.1.0",
-    "loglevel": "^1.6.0",
+    "jsonwebtoken": "^8.2.1",
+    "loglevel": "^1.6.1",
     "morgan": "~1.9.0",
-    "mysql2": "^1.5.1",
+    "mysql2": "^1.5.3",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
-    "sequelize": "^4.25.1",
+    "sequelize": "^4.37.7",
+    "sequelize-auto-migrations": "^1.0.2",
     "sequelize-session-store": "^0.1.0",
     "serve-favicon": "~2.4.5"
   },
@@ -45,6 +49,6 @@
   },
   "homepage": "https://github.com/petrovicstefanrs/vr_library_api#readme",
   "devDependencies": {
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.17.4"
   }
 }

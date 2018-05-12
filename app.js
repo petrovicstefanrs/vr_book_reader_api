@@ -4,6 +4,7 @@ const session             = require('express-session');
 const bodyParser          = require('body-parser');
 const morgan              = require('morgan');
 const log                 = require('loglevel');
+const cors 				  = require('cors')
 // const path             = require('path');
 
 const routes              = require('./routes');
@@ -17,12 +18,14 @@ const tokens              = require('./config/tokens');
 // Initialize Express server
 var app = express();
 
-// c
-app.use(function(req, res, next) {
-	res.header("Access-Control-Allow-Origin", "*");
-	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-	next();
-});
+// Cross Origin
+// app.use(function(req, res, next) {
+// 	res.header("Access-Control-Allow-Origin", "*");
+// 	res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
+// 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
+// 	next();
+// });
+app.use(cors());
 
 // Use logger middleware
 app.use(morgan('dev'));
@@ -70,12 +73,13 @@ app.use(function(err, req, res, next) {
 	res.locals.message = err.message;
 	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-	res.status(err.status || 500);
-	res.send({
+	const error = {
 		error: err,
 		message: err.message,
 		status: err.status
-	});
+	};
+	res.status(err.status || 500);
+	res.send({error});
 });
 
 module.exports = app;

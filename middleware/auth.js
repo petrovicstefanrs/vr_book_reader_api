@@ -28,6 +28,11 @@ module.exports = (req, res, next) => {
 					return res.status(401).send("Invalid user token!");
 				}
 
+				req.principal = {
+					user: {
+						id: userId
+					}
+				}
 				return next();
 			})
 			.catch((err) => {

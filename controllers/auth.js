@@ -9,7 +9,9 @@ const signup = (req, res, next) => {
 			return next(err);
 		}
 		if (!user) {
-			return res.status(401).send(info);
+			const error = new Error(info);
+			error.status = 401;
+			return next(error);
 		}
 		res.status(200).send({ success: true });
 	})(req, res, next);
@@ -19,6 +21,12 @@ const signin = (req, res, next) => {
 	passport.authenticate('local-signin', (err, token, data) => {
 		if (err) {
 			return next(err);
+		}
+
+		if(!token && data) {
+			const error = new Error(data.message || "Something went wrong!");
+			error.status = 401;
+			return next(error);
 		}
 
 		req.session.save((err) => {
@@ -39,12 +47,16 @@ const signintoken = (req, res, next) => {
 	let token = req.body.token || null;
 
 	if(!token) {
-		return res.status(401).send("Invalid user token!");
+		const error = new Error("Your session has expired!");
+		error.status = 401;
+		return next(error);
 	}
 
 	return jwt.verify(token, tokens.jwtToken, (err, decoded) => {
 		if (err) {
-			return res.status(401).send("Token could not be decoded!");
+			const error = new Error("Your session has expired!");
+			error.status = 401;
+			return next(error);
 		}
 
 		const userId = decoded.sub;
@@ -52,7 +64,9 @@ const signintoken = (req, res, next) => {
 			.findById(userId)
 			.then((user) => {
 				if (!user) {
-					return res.status(401).send("Invalid user token!");
+					const error = new Error("Your session has expired!");
+					error.status = 401;
+					return next(error);
 				}
 
 				const userInfo = user.get();
@@ -64,13 +78,15 @@ const signintoken = (req, res, next) => {
 
       			res.status(200).json({
 					success: true,
-					message: 'You have successfully logged in!',
+					message: 'Authorized!',
 					token,
 					user: data
 	    		});
 			})
 			.catch((err) => {
-				return res.status(401).send("Invalid user token!");
+				const error = new Error("Your session has expired!");
+				err.status = 401;
+				return next(error);
 			});
 	});
 };

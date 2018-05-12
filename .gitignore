@@ -59,4 +59,5 @@ typings/
 
 #misc
 config/
+.vscode
 
