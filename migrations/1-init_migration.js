@@ -13,8 +13,8 @@ var Sequelize = require('sequelize');
 
 var info = {
     "revision": 1,
-    "name": "init_database",
-    "created": "2018-05-08T13:49:34.614Z",
+    "name": "init_migration",
+    "created": "2018-05-13T14:31:00.583Z",
     "comment": ""
 };
 
@@ -84,6 +84,9 @@ var migrationCommands = [{
                 },
                 "directory": {
                     "type": Sequelize.STRING
+                },
+                "isFavourite": {
+                    "type": Sequelize.BOOLEAN
                 },
                 "thumbnail": {
                     "type": Sequelize.STRING

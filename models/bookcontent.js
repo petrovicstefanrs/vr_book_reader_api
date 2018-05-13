@@ -7,9 +7,9 @@ module.exports = (sequelize, DataTypes) => {
 			pageIndex: DataTypes.INTEGER,
 			extension: {
 				type: DataTypes.STRING,
-				allowNull: true
+				allowNull: true,
 			},
-			deletedAt: DataTypes.DATE
+			deletedAt: DataTypes.DATE,
 		},
 		{}
 	);

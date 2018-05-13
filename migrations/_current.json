@@ -17,6 +17,9 @@
                 "directory": {
                     "seqType": "Sequelize.STRING"
                 },
+                "isFavourite": {
+                    "seqType": "Sequelize.BOOLEAN"
+                },
                 "thumbnail": {
                     "seqType": "Sequelize.STRING"
                 },

@@ -9,6 +9,7 @@ module.exports = (sequelize, DataTypes) => {
 		name: DataTypes.STRING,
 		description: DataTypes.TEXT,
 		directory: DataTypes.STRING,
+		isFavourite: DataTypes.BOOLEAN,
 		thumbnail: DataTypes.STRING,
 		createdAt: DataTypes.DATE,
 		deletedAt: DataTypes.DATE,
@@ -20,12 +21,48 @@ module.exports = (sequelize, DataTypes) => {
 
 	Book.getUserBooks = (id) => {
 		return Book.findAll({
-			attributes: ['id', 'name', 'description', 'directory', 'thumbnail'],
+			attributes: [
+				'id',
+				'name',
+				'description',
+				'directory',
+				'thumbnail',
+				'isFavourite',
+			],
 			where: {
-				userId: id
+				userId: id,
+				deletedAt: null,
 			},
-			raw: true
+			raw: true,
 		});
-	}
+	};
+
+	Book.toggleFavourite = (userId, bookId) => {
+		return Book.findOne({
+			where: {
+				id: bookId,
+				userId: userId,
+			},
+		}).then((book) => {
+			const isFavourite = book.isFavourite;
+			const toggleValue = !isFavourite;
+			return book.update({
+				isFavourite: toggleValue,
+			});
+		});
+	};
+
+	Book.deleteBook = (userId, bookId) => {
+		return Book.findOne({
+			where: {
+				id: bookId,
+				userId: userId,
+			},
+		}).then((book) => {
+			return book.update({
+				deletedAt: Date.now(),
+			});
+		});
+	};
 	return Book;
 };
