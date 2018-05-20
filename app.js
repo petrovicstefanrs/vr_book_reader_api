@@ -5,26 +5,20 @@ const bodyParser          = require('body-parser');
 const morgan              = require('morgan');
 const log                 = require('loglevel');
 const cors 				  = require('cors')
-// const path             = require('path');
+const libPath 			  = require('path')
 
+const ENV 				  = require('./env');
 const routes              = require('./routes');
 const models              = require('./models');
 const authMiddleware      = require('./middleware/auth');
 const passportStrategies  = require('./config/passport');
 const tokens              = require('./config/tokens');
 
-
-
 // Initialize Express server
 var app = express();
 
 // Cross Origin
-// app.use(function(req, res, next) {
-// 	res.header("Access-Control-Allow-Origin", "*");
-// 	res.header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE, HEAD");
-// 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Authorization, Accept");
-// 	next();
-// });
+
 app.use(cors());
 
 // Use logger middleware
@@ -42,6 +36,12 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Set static folder
+const staticBooksDir = libPath.resolve(ENV.ROOT, ENV.BOOKS_DIR);
+const staticThumbnailsDir = libPath.resolve(ENV.ROOT, ENV.THUMBNAIL_DIR);
+app.use(express.static(staticBooksDir));
+app.use(express.static(staticThumbnailsDir));
 
 // Import all routes as middleware
 

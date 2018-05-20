@@ -59,5 +59,6 @@ typings/
 
 #misc
 config/
+uploads/
 .vscode
 

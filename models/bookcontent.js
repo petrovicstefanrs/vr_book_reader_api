@@ -13,8 +13,13 @@ module.exports = (sequelize, DataTypes) => {
 		},
 		{}
 	);
+
 	BookContent.associate = function(models) {
-		BookContent.belongsTo(models.book);
+		BookContent.belongsTo(models.book, {targetKey: 'id'});
+	};
+
+	BookContent.writeImages = (images, transaction = null) => {
+		return BookContent.bulkCreate(images, transaction);
 	};
 	return BookContent;
 };
