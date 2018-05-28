@@ -6,6 +6,8 @@ const ENV = {
 	PORT: process.env.PORT || '8090',
 	BOOKS_DIR: 'uploads/books',
 	THUMBNAIL_DIR: 'uploads/thumbnails',
+	SOUNDS_DIR: 'uploads/sounds',
+	MODELS_DIR: 'uploads/models',
 	ROOT: libPath.resolve(__dirname, './')
 };
 
