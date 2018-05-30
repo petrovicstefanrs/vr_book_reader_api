@@ -104,7 +104,25 @@ module.exports = (sequelize, DataTypes) => {
 	Book.updateThumbnail = (thumbnail, bookId) => {
 		return sequelize.transaction((t) => {
 			return Book.update(
-				{thumbnail: thumbnail},
+				{ thumbnail: thumbnail },
+				{
+					where: {
+						id: bookId,
+					},
+				},
+				{ transaction: t }
+			);
+		});
+	};
+
+	Book.updateDetails = (payload, bookId) => {
+		const { name, description } = payload;
+		return sequelize.transaction((t) => {
+			return Book.update(
+				{
+					name: name,
+					description: description,
+				},
 				{
 					where: {
 						id: bookId,

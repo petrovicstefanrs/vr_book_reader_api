@@ -20,6 +20,10 @@ router.put('/books/favourite', (req, res, next) => {
 	controller.toggleFavuoriteBook(req, res, next);
 });
 
+router.put('/books/details', (req, res, next) => {
+	controller.updateBookDetails(req, res, next);
+});
+
 router.delete('/books/delete', (req, res, next) => {
 	controller.deleteBook(req, res, next);
 });
@@ -31,5 +35,6 @@ router.post('/books/upload', upload.any(), (req, res, next) => {
 router.post('/books/upload/thumbnail', upload.any(), (req, res, next) => {
 	controller.updateBookThumbnail(req, res, next);
 });
+
 
 module.exports = router;

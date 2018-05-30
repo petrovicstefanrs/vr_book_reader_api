@@ -69,6 +69,28 @@ const deleteBook = (req, res, next) => {
 		});
 };
 
+const updateBookDetails = (req, res, next) => {
+	const { user } = req.principal;
+	const userId = user.id;
+	const { bookId, name, description } = req.body;
+	const data = {
+		name,
+		description,
+	};
+
+	return Books.updateDetails(data, bookId)
+		.then(() => {
+			return Books.getBookById(userId, bookId);
+		})
+		.then((book) => {
+			const payload = book;
+			res.status(200).send(payload);
+		})
+		.catch((err) => {
+			return next(err);
+		});
+};
+
 const uploadBook = (req, res, next) => {
 	const { user } = req.principal;
 	const userId = user.id;
@@ -214,7 +236,7 @@ const extractBookFromRecord = (book) => {
 		{
 			id: book.id,
 			name: book.name,
-			description: book.role,
+			description: book.description,
 			directory: book.directory,
 			thumbnail: book.thumbnail,
 			isFavourite: book.isFavourite,
@@ -241,4 +263,5 @@ module.exports = {
 	deleteBook,
 	uploadBook,
 	updateBookThumbnail,
+	updateBookDetails,
 };
