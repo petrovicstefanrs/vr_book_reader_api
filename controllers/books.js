@@ -3,6 +3,7 @@ const decompress = require('decompress');
 const libFsExtra = require('fs-extra');
 const uuid4 = require('uuid/v4');
 const lodash = require('lodash');
+const pdf2img = require('pdf-image').PDFImage;
 
 const ENV = require('../env');
 const Books = require('../models').book;
@@ -101,7 +102,7 @@ const uploadBook = (req, res, next) => {
 		return next(err);
 	}
 
-	const targetFolderPath = uuid4() + '/';
+	const targetFolderPath = ENV.BOOKS_DIR + '/' + uuid4() + '/';
 	const tmpBookPath = book.path || null;
 
 	return unpackBook(book, targetFolderPath)
@@ -159,13 +160,9 @@ const updateBookThumbnail = (req, res, next) => {
 
 	const oldPath = thumbnail.path || null;
 	const fileExtention = libPath.extname(thumbnail.originalname);
-	const targetFileName = uuid4() + fileExtention;
+	const targetFileName = ENV.THUMBNAIL_DIR + '/' + uuid4() + fileExtention;
 
-	const newPath = libPath.resolve(
-		ENV.ROOT,
-		ENV.THUMBNAIL_DIR,
-		targetFileName
-	);
+	const newPath = libPath.resolve(ENV.ROOT, ENV.STATIC_DIR, targetFileName);
 
 	libFsExtra
 		.move(oldPath, newPath)
@@ -184,13 +181,31 @@ const updateBookThumbnail = (req, res, next) => {
 		});
 };
 
+const updateBookEnviroment = (req, res, next) => {
+	const { user } = req.principal;
+	const userId = user.id;
+	const { envId, bookId } = req.body;
+
+	return Books.updateEnviroment(envId, bookId)
+		.then(() => {
+			return Books.getBookById(userId, bookId);
+		})
+		.then((book) => {
+			const payload = book;
+			res.status(200).send(payload);
+		})
+		.catch((err) => {
+			return next(err);
+		});
+};
+
 // Internal methods ---------------------------------------------------------------
 
 const unpackBook = (book, targetFolderPath) => {
 	const p = new Promise((resolve, reject) => {
 		const targetDir = libPath.resolve(
 			ENV.ROOT,
-			ENV.BOOKS_DIR,
+			ENV.STATIC_DIR,
 			targetFolderPath
 		);
 		const tmpBookPath = book.path || null;
@@ -240,7 +255,8 @@ const extractBookFromRecord = (book) => {
 			directory: book.directory,
 			thumbnail: book.thumbnail,
 			isFavourite: book.isFavourite,
-			createdAt: book.createdAt,
+			createdAt: book.createdAt || null,
+			vrEnviromentId: book.vrEnviromentId || null,
 			pages: lodash.map(book.bookContents, (page) => {
 				return Object.assign(
 					{},
@@ -264,4 +280,5 @@ module.exports = {
 	uploadBook,
 	updateBookThumbnail,
 	updateBookDetails,
+	updateBookEnviroment,
 };

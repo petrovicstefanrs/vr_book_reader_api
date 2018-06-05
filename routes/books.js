@@ -24,6 +24,10 @@ router.put('/books/details', (req, res, next) => {
 	controller.updateBookDetails(req, res, next);
 });
 
+router.put('/books/environment', (req, res, next) => {
+	controller.updateBookEnviroment(req, res, next);
+});
+
 router.delete('/books/delete', (req, res, next) => {
 	controller.deleteBook(req, res, next);
 });

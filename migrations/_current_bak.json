@@ -42,16 +42,6 @@
                     "onDelete": "SET NULL",
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
-                },
-                "vrEnviromentId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "vrEnviroments",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -175,10 +165,20 @@
                 "updatedAt": {
                     "allowNull": false,
                     "seqType": "Sequelize.DATE"
+                },
+                "bookId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "books",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
         }
     },
-    "revision": 4
+    "revision": 3
 }

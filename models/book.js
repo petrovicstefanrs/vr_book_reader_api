@@ -31,6 +31,7 @@ module.exports = (sequelize, DataTypes) => {
 				'directory',
 				'thumbnail',
 				'isFavourite',
+				'vrEnviromentId',
 			],
 			include: [{ model: sequelize.models.bookContent }],
 			where: {
@@ -49,11 +50,13 @@ module.exports = (sequelize, DataTypes) => {
 				'directory',
 				'thumbnail',
 				'isFavourite',
+				'vrEnviromentId',
 			],
 			include: [{ model: sequelize.models.bookContent }],
 			where: {
 				id: bookId,
 				userId: userId,
+				deletedAt: null,
 			},
 		});
 	};
@@ -132,5 +135,22 @@ module.exports = (sequelize, DataTypes) => {
 			);
 		});
 	};
+
+	Book.updateEnviroment = (envId, bookId) => {
+		return sequelize.transaction((t) => {
+			return Book.update(
+				{
+					vrEnviromentId: envId,
+				},
+				{
+					where: {
+						id: bookId,
+					},
+				},
+				{ transaction: t }
+			);
+		});
+	};
+
 	return Book;
 };

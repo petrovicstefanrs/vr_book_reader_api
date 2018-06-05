@@ -38,14 +38,15 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Set static folder
-const staticBooksDir = libPath.resolve(ENV.ROOT, ENV.BOOKS_DIR);
-const staticThumbnailsDir = libPath.resolve(ENV.ROOT, ENV.THUMBNAIL_DIR);
-const staticModelsDir = libPath.resolve(ENV.ROOT, ENV.MODELS_DIR);
-const staticSoundsDir = libPath.resolve(ENV.ROOT, ENV.SOUNDS_DIR);
-app.use(express.static(staticBooksDir));
-app.use(express.static(staticThumbnailsDir));
-app.use(express.static(staticModelsDir));
-app.use(express.static(staticSoundsDir));
+const staticDir = libPath.resolve(ENV.ROOT, ENV.STATIC_DIR);
+// const staticBooksDir = libPath.resolve(ENV.ROOT, ENV.BOOKS_DIR);
+// const staticThumbnailsDir = libPath.resolve(ENV.ROOT, ENV.THUMBNAIL_DIR);
+// const staticModelsDir = libPath.resolve(ENV.ROOT, ENV.MODELS_DIR);
+// const staticSoundsDir = libPath.resolve(ENV.ROOT, ENV.SOUNDS_DIR);
+app.use(express.static(staticDir));
+// app.use(express.static(staticThumbnailsDir));
+// app.use(express.static(staticModelsDir));
+// app.use(express.static(staticSoundsDir));
 
 // Import all routes as middleware
 

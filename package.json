@@ -31,6 +31,7 @@
     "mysql2": "^1.5.3",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "pdf-image": "^2.0.0",
     "rar-to-zip": "0.0.1",
     "sequelize": "^4.37.7",
     "sequelize-auto-migrations": "^1.0.2",
