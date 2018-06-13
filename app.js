@@ -39,14 +39,7 @@ app.use(passport.session());
 
 // Set static folder
 const staticDir = libPath.resolve(ENV.ROOT, ENV.STATIC_DIR);
-// const staticBooksDir = libPath.resolve(ENV.ROOT, ENV.BOOKS_DIR);
-// const staticThumbnailsDir = libPath.resolve(ENV.ROOT, ENV.THUMBNAIL_DIR);
-// const staticModelsDir = libPath.resolve(ENV.ROOT, ENV.MODELS_DIR);
-// const staticSoundsDir = libPath.resolve(ENV.ROOT, ENV.SOUNDS_DIR);
 app.use(express.static(staticDir));
-// app.use(express.static(staticThumbnailsDir));
-// app.use(express.static(staticModelsDir));
-// app.use(express.static(staticSoundsDir));
 
 // Import all routes as middleware
 
@@ -56,8 +49,6 @@ app.use('/', routes);
 
 passport.use('local-signin', passportStrategies.local_signin);
 passport.use('local-signup', passportStrategies.local_signup);
-// passport.serializeUser(passportStrategies.serializeUser);
-// passport.deserializeUser(passportStrategies.deserializeUser);
 
 models.sequelize.authenticate()
 	.then(() => {

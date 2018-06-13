@@ -1,9 +1,10 @@
 const libPath = require('path');
-const decompress = require('decompress');
 const libFsExtra = require('fs-extra');
+const libFs = require('fs');
+const decompress = require('decompress');
+const unrar = require('node-unrar-js');
 const uuid4 = require('uuid/v4');
 const lodash = require('lodash');
-const pdf2img = require('pdf-image').PDFImage;
 
 const ENV = require('../env');
 const Books = require('../models').book;
@@ -114,14 +115,15 @@ const uploadBook = (req, res, next) => {
 				thumbnail: thumbnailPath,
 				userId,
 			};
+			let pageIndex = 0;
 			const pagesPayload = lodash.map(files, (file) => {
 				const fileExtention = libPath.extname(file.path);
-				const pageIndex = libPath.basename(file.path, fileExtention);
 				const data = {
 					path: libPath.join(targetFolderPath, file.path),
 					pageIndex,
 					extension: fileExtention,
 				};
+				pageIndex++;
 				return data;
 			});
 
@@ -208,11 +210,13 @@ const unpackBook = (book, targetFolderPath) => {
 			ENV.STATIC_DIR,
 			targetFolderPath
 		);
+		const bookMimeType = book.mimetype;
+		const bookExt = libPath.extname(book.originalname);
 		const tmpBookPath = book.path || null;
 
 		if (!tmpBookPath) {
 			const err = new Error(
-				`Unable to process book: ${book.filename || 'Unknown'}.`
+				`Unable to process book: ${book.originalname || 'Unknown'}.`
 			);
 			reject(err);
 		}
@@ -221,25 +225,74 @@ const unpackBook = (book, targetFolderPath) => {
 				reject(err);
 			}
 
-			let i = 0;
-			decompress(tmpBookPath, targetDir, {
-				filter: (file) => {
-					return file.type === 'file';
-				},
-				map: (file) => {
-					// Rename decompresed files to a desired format
-					const ext = libPath.extname(file.path);
-					file.path = `${i}${ext}`;
-					i++;
-					return file;
-				},
-			})
-				.then((files) => {
-					return resolve(files);
+			if (bookExt === '.cbr') {
+				const extractor = unrar.createExtractorFromFile(
+					tmpBookPath,
+					targetDir
+				);
+				const list = extractor.getFileList();
+
+				if (list[0].state === 'SUCCESS') {
+					const data = extractor.extractAll();
+					const { files } = data[1];
+					console.log(files);
+					let i = 0;
+					const payload = lodash.map(files, (file) => {
+						const { fileHeader } = file;
+						if (!fileHeader) {
+							const err = new Error(
+								`Unable to process book pages: ${book.originalname ||
+									'Unknown'}.`
+							);
+							reject(err);
+						}
+						const pageName = libPath.resolve(
+							targetDir,
+							fileHeader.name
+						);
+						const pageExt = libPath.extname(fileHeader.name);
+						const newPageName = libPath.resolve(
+							targetDir,
+							`${i}${pageExt}`
+						);
+						libFs.renameSync(pageName, newPageName);
+
+						const payload = {
+							path: `${i}${pageExt}`,
+							type: 'file',
+						};
+						i++;
+						return payload;
+					});
+
+					return resolve(payload);
+				}
+			} else if (bookExt === '.cbz') {
+				let i = 0;
+				decompress(tmpBookPath, targetDir, {
+					filter: (file) => {
+						return file.type === 'file';
+					},
+					map: (file) => {
+						// Rename decompresed files to a desired format
+						const ext = libPath.extname(file.path);
+						file.path = `${i}${ext}`;
+						i++;
+						return file;
+					},
 				})
-				.catch((err) => {
-					return reject(err);
-				});
+					.then((files) => {
+						return resolve(files);
+					})
+					.catch((err) => {
+						return reject(err);
+					});
+			} else {
+				const err = new Error(
+					`Unsupported book format: ${bookExt || 'Unknown'}.`
+				);
+				reject(err);
+			}
 		});
 	});
 	return p;

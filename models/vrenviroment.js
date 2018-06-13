@@ -30,11 +30,12 @@ module.exports = (sequelize, DataTypes) => {
 			where: {
 				deletedAt: null,
 			},
+			raw: true,
 		});
 	};
 
 	VrEnviroment.getEnviromentById = (envId) => {
-		return Book.findOne({
+		return VrEnviroment.findOne({
 			attributes: [
 				'id',
 				'name',

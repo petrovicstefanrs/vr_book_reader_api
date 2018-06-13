@@ -42,6 +42,16 @@
                     "onDelete": "SET NULL",
                     "onUpdate": "CASCADE",
                     "seqType": "Sequelize.INTEGER"
+                },
+                "vrEnviromentId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "vrEnviroments",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -89,6 +99,48 @@
             },
             "indexes": []
         },
+        "uiThemes": {
+            "tableName": "uiThemes",
+            "schema": {
+                "id": {
+                    "autoIncrement": true,
+                    "primaryKey": true,
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "name": {
+                    "seqType": "Sequelize.STRING"
+                },
+                "thumbnail": {
+                    "seqType": "Sequelize.STRING"
+                },
+                "primary": {
+                    "seqType": "Sequelize.STRING"
+                },
+                "secondary": {
+                    "seqType": "Sequelize.STRING"
+                },
+                "error": {
+                    "seqType": "Sequelize.STRING"
+                },
+                "success": {
+                    "seqType": "Sequelize.STRING"
+                },
+                "warning": {
+                    "seqType": "Sequelize.STRING"
+                },
+                "createdAt": {
+                    "seqType": "Sequelize.DATE"
+                },
+                "deletedAt": {
+                    "seqType": "Sequelize.DATE"
+                },
+                "updatedAt": {
+                    "allowNull": false,
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
         "users": {
             "tableName": "users",
             "schema": {
@@ -125,6 +177,10 @@
                     },
                     "seqType": "Sequelize.ENUM('active', 'inactive')"
                 },
+                "thumbnail": {
+                    "allowNull": true,
+                    "seqType": "Sequelize.STRING"
+                },
                 "createdAt": {
                     "allowNull": false,
                     "seqType": "Sequelize.DATE"
@@ -132,6 +188,16 @@
                 "updatedAt": {
                     "allowNull": false,
                     "seqType": "Sequelize.DATE"
+                },
+                "uiThemeId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "uiThemes",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
@@ -165,20 +231,10 @@
                 "updatedAt": {
                     "allowNull": false,
                     "seqType": "Sequelize.DATE"
-                },
-                "bookId": {
-                    "allowNull": true,
-                    "references": {
-                        "model": "books",
-                        "key": "id"
-                    },
-                    "onDelete": "SET NULL",
-                    "onUpdate": "CASCADE",
-                    "seqType": "Sequelize.INTEGER"
                 }
             },
             "indexes": []
         }
     },
-    "revision": 3
+    "revision": 5
 }

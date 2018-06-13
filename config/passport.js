@@ -18,7 +18,7 @@ const local_signin = new LocalStrategy(
 		passwordField: 'password',
 	},
 	(email, password, done) => {
-		User.findOne({ where: { email: email } })
+		User.findOne({ where: { email: email, } })
 			.then((user) => {
 				if (!user) {
 					const error = new Error();
@@ -36,6 +36,14 @@ const local_signin = new LocalStrategy(
 
 					return done(error);
 				}
+				if (user.status !== 'active') {
+					const error = new Error();
+					error.status = 401;
+					error.name = 'IncorrectCredentialsError';
+					error.message = 'Your Profile is deactivated.';
+
+					return done(error);
+				}
 				const userInfo = user.get();
 
 				const payload = {
@@ -43,6 +51,7 @@ const local_signin = new LocalStrategy(
 				};
 
 				// create a token string
+
 				const token = jwt.sign(payload, tokens.jwtToken);
 				const data = {
 					name: userInfo.username,
@@ -111,36 +120,10 @@ const local_signup = new LocalStrategy(
 	}
 );
 
-// const serializeUser = (user, done) => {
-// 	console.log("SERIALIZACIJA",user);
-//     done(null, user.id);
-// };
-
-// const deserializeUser = (id, done) => {
-// 	console.log("DESERIALIZACIJA",id);
-// 	User
-// 		.findById(id)
-// 		.then((user) => {
-// 			if (user) {
-// 			 	done(null, user.get());
-// 			}
-// 			else {
-// 			 	done(user.errors,null);
-// 			}
-// 		});
-// };
-
-// const validateSignupData = (data) => {
-// 	if (true) {}
-// }
-
 module.exports = {
 	// Sign in strategy
 	local_signin,
 
 	// Sign up strategy
 	local_signup,
-
-	// serializeUser,
-	// deserializeUser
 };

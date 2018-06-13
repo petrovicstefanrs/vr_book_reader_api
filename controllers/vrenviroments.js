@@ -2,8 +2,8 @@ const VrEnviroments = require('../models').vrEnviroment;
 
 const getEnviroments = (req, res, next) => {
 	return VrEnviroments.getAllEnviroments()
-		.then((enviroment) => {
-			res.status(200).send(enviroment);
+		.then((enviroments) => {
+			res.status(200).send(enviroments);
 		})
 		.catch((err) => {
 			return next(err);
