@@ -58,7 +58,9 @@ typings/
 .env
 
 #misc
-config/
-uploads/
+uploads/avatars
+uploads/books
+uploads/sounds
+uploads/thumbnails
 .vscode
 
