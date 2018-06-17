@@ -14,10 +14,6 @@
     "dialect": "mysql"
   },
   "production": {
-    "username": "",
-    "password": null,
-    "database": "",
-    "host": "",
-    "dialect": "mysql"
+    "use_env_variable": "JAWSDB_MARIA_URL"
   }
 }
