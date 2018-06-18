@@ -31,6 +31,7 @@
     "node-unrar-js": "^0.8.1",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "pg": "7.4.3",
     "sequelize": "^4.37.7",
     "sequelize-auto-migrations": "^1.0.2",
     "sequelize-session-store": "^0.1.0",
