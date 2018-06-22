@@ -235,7 +235,7 @@ const unpackBook = (book, targetFolderPath) => {
 				if (list[0].state === 'SUCCESS') {
 					const data = extractor.extractAll();
 					const { files } = data[1];
-					console.log(files);
+
 					let i = 0;
 					const payload = lodash.map(files, (file) => {
 						const { fileHeader } = file;
