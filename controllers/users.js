@@ -1,5 +1,6 @@
 const libPath = require('path');
 const libFsExtra = require('fs-extra');
+const libFs = require('fs');
 const uuid4 = require('uuid/v4');
 const lodash = require('lodash');
 
@@ -14,6 +15,22 @@ const getUser = (req, res, next) => {
 	return Users.getUser(userId)
 		.then((user) => {
 			const payload = user.dataValues;
+			const { avatar } = payload;
+
+			if (avatar) {
+				const avatarPath = libPath.resolve(
+					ENV.ROOT,
+					ENV.STATIC_DIR,
+					avatar
+				);
+				const avatarExists = libFs.existsSync(avatarPath);
+
+				if (!avatarExists) {
+					payload.avatar = null;
+					Users.updateUserAvatar(null, userId);
+				}
+			}
+
 			res.status(200).send(payload);
 		})
 		.catch((err) => {

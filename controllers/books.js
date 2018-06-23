@@ -16,9 +16,21 @@ const getBooks = (req, res, next) => {
 
 	return Books.getUserBooks(userId)
 		.then((data) => {
-			const payload = lodash.map(data, (book) => {
+			const books = lodash.map(data, (book) => {
 				return extractBookFromRecord(book);
 			});
+
+			const payload = lodash.map(books, (book) => {
+				const exists = bookExists(book.directory);
+
+				if (exists) {
+					return book;
+				} else {
+					Books.deleteBook(userId, book.id);
+					return;
+				}
+			});
+
 			res.status(200).send(payload);
 		})
 		.catch((err) => {
@@ -33,7 +45,16 @@ const getBookById = (req, res, next) => {
 
 	return Books.getBookById(userId, bookId)
 		.then((book) => {
-			const payload = extractBookFromRecord(book);
+			const rawBook = extractBookFromRecord(book);
+			let payload = null;
+			const exists = bookExists(rawBook.directory);
+
+			if (exists) {
+				payload = rawBook;
+			} else {
+				Books.deleteBook(userId, rawBook.id);
+			}
+
 			res.status(200).send(payload);
 		})
 		.catch((err) => {
@@ -202,6 +223,13 @@ const updateBookEnviroment = (req, res, next) => {
 };
 
 // Internal methods ---------------------------------------------------------------
+
+const bookExists = (bookDir) => {
+	const bookPath = libPath.resolve(ENV.ROOT, ENV.STATIC_DIR, bookDir);
+	const exists = libFs.existsSync(bookPath);
+
+	return exists;
+};
 
 const unpackBook = (book, targetFolderPath) => {
 	const p = new Promise((resolve, reject) => {
