@@ -20,7 +20,7 @@ const getBooks = (req, res, next) => {
 				return extractBookFromRecord(book);
 			});
 
-			const payload = lodash.map(books, (book) => {
+			let payload = lodash.map(books, (book) => {
 				const exists = bookExists(book.directory);
 
 				if (exists) {
@@ -30,6 +30,10 @@ const getBooks = (req, res, next) => {
 					return;
 				}
 			});
+
+			if(!payload || !payload.length) {
+				payload = [];
+			}
 
 			res.status(200).send(payload);
 		})
